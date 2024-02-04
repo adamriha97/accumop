@@ -1,2 +1,2 @@
 .conda
-*.csv
+data/*.csv

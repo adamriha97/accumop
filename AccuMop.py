@@ -6,12 +6,16 @@ import pydeck as pdk
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
+from functions import Functions as func
+
+
+coordinates_matrix = func.create_coordinates_matrix()
 st.set_page_config(page_title="AccuMop", page_icon="world_map", layout="wide") # wide centered
 
 # ---- READ CSV ----
 @st.cache_data
 def get_data_from_csv():
-    file_path = 'streamlit_data.csv'
+    file_path = './data/streamlit_data_skody.csv'
     df = pd.read_csv(file_path, encoding='Windows-1252', sep=';')
     columns_to_check = ['lat_grid_mid', 'long_grid_mid']
     df = df.dropna(subset=columns_to_check)
@@ -20,10 +24,14 @@ df = get_data_from_csv()
 
 # ---- SIDEBAR ----
 st.sidebar.header("Možnosti:")
+map_option = st.sidebar.radio('Jakou statistiku zobrazit?', ('skody', 'plneni', 'propojistenost'))
+if map_option == 'skody':
+    risks = ('VICHRICE', 'KRUPOBITI', 'POV_ZAP')
+else:
+    risks = ('Všechna rizika', 'VICHRICE', 'KRUPOBITI', 'POVODEN', 'ZAPLAVA', 'POV_ZAP')
 risk_on_map = st.sidebar.selectbox(
     'Jaké riziko zobrazit?',
-    ('Všechna rizika', 'VICHRICE', 'KRUPOBITI', 'POVODEN', 'ZAPLAVA'))
-map_option = st.sidebar.radio('Jakou statistiku zobrazit?', ('plneni', 'propojistenost'))
+    risks)
 red_factor = st.sidebar.slider('Míra červenosti:', 0.0, 0.99, 0.5, 0.01)
 
 if risk_on_map == 'Všechna rizika':
