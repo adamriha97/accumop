@@ -14,13 +14,15 @@ st.title("AccuMop :world_map:")
 st.subheader('Demo page', divider='blue')
 st.markdown("##")
 
+def show_demo(type = 1):
+    mx = func.create_demo_matrix(type)
+    df = func.convert_mx_to_df(func, matrix = mx, red_factor = red_factor)
+    st.map(df, latitude='latitude', longitude='longitude', color='color_hex', size=350)
+    mx = func.blur_matrix(func, matrix = mx, power = 1)
+    df = func.convert_mx_to_df(func, matrix = mx, red_factor = red_factor)
+    st.map(df, latitude='latitude', longitude='longitude', color='color_hex', size=350)
 
-mx = func.create_demo_matrix(2)
-df = func.convert_mx_to_df(func, matrix = mx, red_factor = red_factor)
-
-st.map(df, latitude='latitude', longitude='longitude', color='color_hex', size=350)
-
-mx = func.blur_matrix(func, matrix = mx, power = 1)
-df = func.convert_mx_to_df(func, matrix = mx, red_factor = red_factor)
-
-st.map(df, latitude='latitude', longitude='longitude', color='color_hex', size=350)
+show_demo(1)
+show_demo(2)
+show_demo(3)
+show_demo(4)
