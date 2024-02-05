@@ -26,13 +26,13 @@ df = get_data_from_csv()
 st.sidebar.header("Možnosti:")
 map_option = st.sidebar.radio('Jakou statistiku zobrazit?', ('skody', 'plneni', 'propojistenost'))
 if map_option == 'skody':
-    risks = ('VICHRICE', 'KRUPOBITI', 'POV_ZAP')
+    risks = ('POV_ZAP', 'VICHRICE', 'KRUPOBITI')
 else:
     risks = ('Všechna rizika', 'VICHRICE', 'KRUPOBITI', 'POVODEN', 'ZAPLAVA', 'POV_ZAP')
 risk_on_map = st.sidebar.selectbox(
     'Jaké riziko zobrazit?',
     risks)
-red_factor = st.sidebar.slider('Míra červenosti:', 0.0, 0.99, 0.5, 0.01)
+red_factor = st.sidebar.slider('Míra červenosti:', 0.0, 0.99, 0.0, 0.01)
 
 if risk_on_map == 'Všechna rizika':
     show_on_map = '1'
@@ -50,9 +50,16 @@ norm = mcolors.Normalize(vmin=0, vmax=1*(1-red_factor))
 df['color_hex'] = df[show_on_map].apply(lambda x: mcolors.to_hex(cmap(norm(x)))) + 'bf'
 df = df.reset_index()
 
-st.dataframe(df)
+#st.dataframe(df)
 
 st.map(df, latitude='lat_grid_mid', longitude='long_grid_mid', color='color_hex', size=350)
+
+mx = func.convert_data_to_mx(func, df, show_on_map)
+blur_mx = func.blur_matrix(func, matrix = mx, distance = 3, power = 1)
+df2 = func.convert_mx_to_df(func, matrix = blur_mx, red_factor = red_factor)
+st.map(df2, latitude='latitude', longitude='longitude', color='color_hex', size=350)
+
+#mx = func.convert_data_to_mx_test(func, df, show_on_map)
 
 # ---- HIDE STREAMLIT STYLE ----
 hide_st_style = """

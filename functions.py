@@ -57,6 +57,17 @@ class Functions():
                         mx[x + i][y + j] = 1.2 - 0.2*abs(j)
         return mx
     
+    def convert_data_to_mx(self, data, values_column, normalize = True, x_column = 'matrix_X', y_column = 'matrix_Y'):
+        values = data[values_column].tolist()
+        x = data[x_column].tolist()
+        y = data[y_column].tolist()
+        mx = np.zeros((const.MX_LONG, const.MX_LAT))
+        for i in range(len(values)):
+            mx[int(x[i])][int(y[i])] = values[i]
+        if normalize:
+            mx = self.normalize_matrix(mx)
+        return mx
+
     def convert_mx_to_df(self, matrix, red_factor = 0):
         coordinates_matrix = self.create_coordinates_matrix()
         # Define the columns for the DataFrame
@@ -87,7 +98,42 @@ class Functions():
         mx = matrix / max_val
         return mx
 
-    def blur_matrix(self, matrix, power = 1):
+    def create_kernel_matrix(dimension = 7, power = 1):
+        kmx = np.zeros((dimension, dimension))
+        center = (dimension - 1) / 2
+        for i in range(dimension):
+            for j in range(dimension):
+                pyth_distance = (abs(center-i)**2 + abs(center-j)**2) ** 0.5
+                kmx[i][j] = 1 / ((1 + pyth_distance) ** power)
+        return kmx
+
+    def blur_matrix(self, matrix, distance = 3, power = 1):
+        # handle input
+        distance = int(distance)
+        # case for blur with distance 0
+        if distance < 1:
+            return matrix
+        # create padded matrix
+        padding = distance
+        padded_matrix = np.pad(matrix, ((padding, padding), (padding, padding)), mode='constant', constant_values=0)
+        # create kernel matrix
+        dimension = 2 * distance + 1
+        kernel_matrix = self.create_kernel_matrix(dimension = dimension, power = power)
+        # create new matrix
+        mx_new = np.zeros((const.MX_LONG, const.MX_LAT))
+        x, y = mx_new.shape
+        for i in range(x):
+            print(i, 'of', x)
+            for j in range(y):
+                for zi in range(dimension):
+                    for zj in range(dimension):
+                        k = i + zi
+                        l = j + zj
+                        mx_new[i][j] = mx_new[i][j] + padded_matrix[k][l] * kernel_matrix[zi][zj]
+        mx_new = self.normalize_matrix(mx_new)
+        return mx_new
+
+    def blur_matrix_simple(self, matrix, power = 1):
         x, y = matrix.shape
         mx_new = np.zeros((const.MX_LONG, const.MX_LAT))
         for i in range(3, x - 3, 1):
