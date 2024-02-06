@@ -33,6 +33,8 @@ risk_on_map = st.sidebar.selectbox(
     'Jaké riziko zobrazit?',
     risks)
 red_factor = st.sidebar.slider('Míra červenosti:', 0.0, 0.99, 0.0, 0.01)
+blur_distance = st.sidebar.slider('Rozmělnění - vzdálenost:', 1, 10, 3, 1)
+blur_power = st.sidebar.slider('Rozmělnění - snížení efektu:', 0.0, 3.0, 1.0, 0.1)
 
 if risk_on_map == 'Všechna rizika':
     show_on_map = '1'
@@ -55,7 +57,7 @@ df = df.reset_index()
 st.map(df, latitude='lat_grid_mid', longitude='long_grid_mid', color='color_hex', size=350)
 
 mx = func.convert_data_to_mx(func, df, show_on_map)
-blur_mx = func.blur_matrix(func, matrix = mx, distance = 3, power = 1)
+blur_mx = func.blur_matrix(func, matrix = mx, distance = blur_distance, power = blur_power)
 df2 = func.convert_mx_to_df(func, matrix = blur_mx, red_factor = red_factor)
 st.map(df2, latitude='latitude', longitude='longitude', color='color_hex', size=350)
 
