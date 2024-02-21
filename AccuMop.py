@@ -59,9 +59,18 @@ df = df.reset_index()
 st.map(df, latitude='lat_grid_mid', longitude='long_grid_mid', color='color_hex', size=350)
 
 mx = func.convert_data_to_mx(func, df, show_on_map)
+df1 = func.convert_mx_to_df(func, matrix = mx, red_factor = red_factor)
+st.map(df1, latitude='latitude', longitude='longitude', color='color_hex', size=350)
+
 blur_mx = func.blur_matrix(func, matrix = mx, distance = blur_distance, power = blur_power)
 df2 = func.convert_mx_to_df(func, matrix = blur_mx, red_factor = red_factor)
 st.map(df2, latitude='latitude', longitude='longitude', color='color_hex', size=350)
+
+mx_zone = func.convert_data_to_mx(func, df_zone, values_column = 'SUM_of_emb_bu_flood_zone_0', normalize = False, ones = True)
+mx_zone_0_1 = func.normalize_matrix_ceil_0_1(mx_zone)
+blur_mx_zone = func.product_of_matrixes(blur_mx, mx_zone_0_1)
+df3 = func.convert_mx_to_df(func, matrix = blur_mx_zone, red_factor = red_factor)
+st.map(df3, latitude='latitude', longitude='longitude', color='color_hex', size=350)
 
 #mx = func.convert_data_to_mx_test(func, df, show_on_map)
 

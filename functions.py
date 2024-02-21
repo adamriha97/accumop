@@ -58,11 +58,14 @@ class Functions():
                         mx[x + i][y + j] = 1.2 - 0.2*abs(j)
         return mx
     
-    def convert_data_to_mx(self, data, values_column, normalize = True, x_column = 'matrix_X', y_column = 'matrix_Y'):
+    def convert_data_to_mx(self, data, values_column, normalize = True, x_column = 'matrix_X', y_column = 'matrix_Y', ones = False):
         values = data[values_column].tolist()
         x = data[x_column].tolist()
         y = data[y_column].tolist()
-        mx = np.zeros((const.MX_LONG, const.MX_LAT))
+        if ones:
+            mx = np.ones((const.MX_LONG, const.MX_LAT))
+        else:
+            mx = np.zeros((const.MX_LONG, const.MX_LAT))
         for i in range(len(values)):
             mx[int(x[i])][int(y[i])] = values[i]
         if normalize:
@@ -94,6 +97,14 @@ class Functions():
         df = df.reset_index()
         return df
     
+    def product_of_matrixes(matrix1, matrix2):
+        x, y = matrix1.shape
+        mx = np.zeros((x, y))
+        for i in range(x):
+            for j in range(y):
+                mx[i][j] = matrix1[i][j] * matrix2[i][j]
+        return mx
+
     def normalize_matrix(matrix):
         max_val = np.max(matrix)
         mx = matrix / max_val
