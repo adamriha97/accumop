@@ -14,19 +14,21 @@ st.set_page_config(page_title="AccuMop", page_icon="world_map", layout="wide") #
 
 # ---- READ CSV ----
 @st.cache_data
-def get_data_from_csv():
-    file_path = './data/streamlit_data_skody.csv'
+def get_data_from_csv(file_path):
     df = pd.read_csv(file_path, encoding='Windows-1252', sep=';')
     columns_to_check = ['lat_grid_mid', 'long_grid_mid']
     df = df.dropna(subset=columns_to_check)
     return df
-df = get_data_from_csv()
+# main data
+df = get_data_from_csv(file_path = './data/streamlit_data_20240220_skody_cut.csv') # streamlit_data_skody
+# zone data
+df_zone = get_data_from_csv(file_path = './data/DATA_MATRIX_FLOOD_ZONE_A.csv')
 
 # ---- SIDEBAR ----
 st.sidebar.header("Možnosti:")
 map_option = st.sidebar.radio('Jakou statistiku zobrazit?', ('skody', 'plneni', 'propojistenost'))
 if map_option == 'skody':
-    risks = ('POV_ZAP', 'VICHRICE', 'KRUPOBITI')
+    risks = ('POVODEN_cut', 'ZAPLAVA_cut', 'VICHRICE_cut', 'KRUPOBITI_cut', 'POVODEN', 'ZAPLAVA', 'VICHRICE', 'KRUPOBITI')
 else:
     risks = ('Všechna rizika', 'VICHRICE', 'KRUPOBITI', 'POVODEN', 'ZAPLAVA', 'POV_ZAP')
 risk_on_map = st.sidebar.selectbox(
@@ -39,7 +41,7 @@ blur_power = st.sidebar.slider('Rozmělnění - snížení efektu:', 0.0, 3.0, 1
 if risk_on_map == 'Všechna rizika':
     show_on_map = '1'
 else:
-    show_on_map ='_' + risk_on_map + '1'
+    show_on_map = '_' + risk_on_map + '1'
 show_on_map = map_option + show_on_map
 
 # ---- MAINPAGE ----

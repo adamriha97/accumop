@@ -1,6 +1,7 @@
 import constants as const
 import numpy as np
 import pandas as pd
+import math
 
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -96,6 +97,14 @@ class Functions():
     def normalize_matrix(matrix):
         max_val = np.max(matrix)
         mx = matrix / max_val
+        return mx
+    
+    def normalize_matrix_ceil_0_1(matrix):
+        max_val = np.max(matrix)
+        mx = matrix / max_val
+        for i in range(len(mx)):
+            for j in range(len(mx[i])):
+                mx[i][j] = math.ceil(mx[i][j])
         return mx
 
     def create_kernel_matrix(dimension = 7, power = 1):
