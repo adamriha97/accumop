@@ -22,7 +22,7 @@ def get_data_from_csv(file_path):
 # main data
 df = get_data_from_csv(file_path = './data/streamlit_data_20240220_skody_cut.csv') # streamlit_data_skody
 # zone data
-df_zone = get_data_from_csv(file_path = './data/DATA_MATRIX_FLOOD_ZONE_A.csv')
+df_zone = get_data_from_csv(file_path = './data/DATA_MATRIX_FLOOD_ZONE_A_GD.csv')
 
 # ---- SIDEBAR ----
 st.sidebar.header("Možnosti:")
@@ -71,6 +71,9 @@ mx_zone_0_1 = func.normalize_matrix_ceil_0_1(mx_zone)
 blur_mx_zone = func.product_of_matrixes(blur_mx, mx_zone_0_1)
 df3 = func.convert_mx_to_df(func, matrix = blur_mx_zone, red_factor = red_factor)
 st.map(df3, latitude='latitude', longitude='longitude', color='color_hex', size=350)
+
+df_zone_0_1 = func.convert_mx_to_df(func, matrix = mx_zone_0_1, red_factor = red_factor)
+st.map(df_zone_0_1, latitude='latitude', longitude='longitude', color='color_hex', size=350)
 
 #mx = func.convert_data_to_mx_test(func, df, show_on_map)
 
