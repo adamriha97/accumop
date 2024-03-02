@@ -18,12 +18,20 @@ Pro dané riziko vypočteme v každém čtverci sumu očekávaných škod danéh
 
 Získaná data již můžeme zobrazit přímo na mapě tak, že červenější body v zobrazené matici odpovídají hodnotám bližším 1, tedy území s větší akumulací rizika.
 
+![image](pics\original_pic.PNG)
+
 Problémem je, že takto mohou vzniknout čtvercové oblasti, pro které nebudeme mít dostatečká data, tedy nepojištěné objekty, nicméně z mapy vidíme, že v okolních oblastech máme velkou akumulaci rizika. Tento problém vyřeší pomocí upraveného algoritmu, který se používá k rozmazání obrázků.
 
-Chceme tedy získat novou matici hodnot, která bude vycházet z té původní, ale v každém čtverci matice bude brát v ůvahu také hodnoty okolních čtverců. Čím je však okolní oblast dál, tím menší váhu pro hodnotu v aktuálním čtverci by měla mít. Od určité vzdálenosti již vzájemný vliv jednotlivých oblastí nepřipouštíme (výchozí hodnota jsou 3 km). Pokud $s_n$ je hodnotu čtverce v nové matici, $s_o$ je hodnota čverce ve staré matici, $d$ je Euklidovská vzdálenost čtverců a $p$ je volitelná hodnota (výchozí hodnota je 1), pak vzorec pro výpočet hodnot v nové matici by se dal tedy zapsat takto:
+Chceme tedy získat novou matici hodnot, která bude vycházet z té původní, ale v každém čtverci matice bude brát v ůvahu také hodnoty okolních čtverců. Čím je však okolní oblast dál, tím menší váhu pro hodnotu v aktuálním čtverci by měla mít. Od určité vzdálenosti již vzájemný vliv jednotlivých oblastí nepřipouštíme (výchozí hodnota jsou 3 km).
+
+![image](pics\blur_pic.PNG)
+
+Pokud $s_n$ je hodnotu čtverce v nové matici, $s_o$ je hodnota čverce ve staré matici, $d$ je Euklidovská vzdálenost čtverců a $p$ je volitelná hodnota (výchozí hodnota je 1), pak vzorec pro výpočet hodnot v nové matici by se dal tedy zapsat takto:
 
 $$s_{n} = \sum\frac{s_{o}}{\left( 1+d \right)^{p}}$$
 
 Po tomto procesu však ještě vzniká problém s tím, že v některých případech se nám mohou dostat nenulové, případně i vysoké hodnoty do čtverců, kde všechny budovy spadají do bezrizikové zóny (například místo u řeky, ale na kopci). To vyřešíme tak, že všechny takové hodnoty v nové matici převedeme na 0 a poté opět všechny hodnoty matice vydělíme maximální hodnotou matice, aby macimální hodnotou byla hodnota 1.
+
+![image](pics\final_pic.PNG)
 
 Výsledek můžeme opět zobrazit na mapě a využít ho v dalších procesech.
