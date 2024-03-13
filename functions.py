@@ -58,8 +58,10 @@ class Functions():
                         mx[x + i][y + j] = 1.2 - 0.2*abs(j)
         return mx
     
-    def convert_data_to_mx(self, data, values_column, normalize = True, x_column = 'matrix_X', y_column = 'matrix_Y', ones = False):
+    def convert_data_to_mx(self, data, values_column, normalize = True, x_column = 'matrix_X', y_column = 'matrix_Y', ones = False, fix_none = False):
         values = data[values_column].tolist()
+        if fix_none:
+            values = [0 if x is None or x == -1 else x for x in values]
         x = data[x_column].tolist()
         y = data[y_column].tolist()
         if ones:
@@ -183,3 +185,22 @@ class Functions():
                             mx_new[i][j] = mx_new[i][j] + matrix[k][l] * (1 / ((1 + distance) ** power))
         mx_new = self.normalize_matrix(mx_new)
         return mx_new
+    
+    def map_mx_to_df(self, matrix, number_of_bands = 50):
+        bands = [i/number_of_bands for i in range(number_of_bands+1)]
+        zeros = [0 for _ in range(number_of_bands+1)]
+        df = pd.DataFrame({'upper_bound': bands, 'count': zeros})
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                df.at[round(math.ceil(matrix[i][j] * 100) / 2), 'count'] += 1
+        return df
+    
+    def map_mx_to_df_poji(self, matrix, matrix_poji, number_of_bands = 50):
+        bands = [i/number_of_bands for i in range(number_of_bands+1)]
+        zeros = [0 for _ in range(number_of_bands+1)]
+        df = pd.DataFrame({'upper_bound': bands, 'count': zeros, 'poji': zeros})
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                df.at[round(math.ceil(matrix[i][j] * 100) / 2), 'count'] += 1
+                df.at[round(math.ceil(matrix[i][j] * 100) / 2), 'poji'] += matrix_poji[i][j]
+        return df

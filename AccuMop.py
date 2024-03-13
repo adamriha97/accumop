@@ -54,7 +54,7 @@ norm = mcolors.Normalize(vmin=0, vmax=1*(1-red_factor))
 df['color_hex'] = df[show_on_map].apply(lambda x: mcolors.to_hex(cmap(norm(x)))) + 'bf'
 df = df.reset_index()
 
-#st.dataframe(df)
+st.dataframe(df)
 
 st.map(df, latitude='lat_grid_mid', longitude='long_grid_mid', color='color_hex', size=350)
 
