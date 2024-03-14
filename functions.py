@@ -58,10 +58,15 @@ class Functions():
                         mx[x + i][y + j] = 1.2 - 0.2*abs(j)
         return mx
     
-    def convert_data_to_mx(self, data, values_column, normalize = True, x_column = 'matrix_X', y_column = 'matrix_Y', ones = False, fix_none = False):
+    def convert_data_to_mx(self, data, values_column, normalize = True, x_column = 'matrix_X', y_column = 'matrix_Y', ones = False, round_values = False):
         values = data[values_column].tolist()
-        if fix_none:
-            values = [0 if x is None or x == -1 else x for x in values]
+        if round_values:
+            #values = [0 if x is None or x == math.nan or x == float('nan') or x == -1 else x for x in values]
+            for i in range(len(values)):
+                try:
+                    values[i] = round(values[i])
+                except:
+                    values[i] = 0
         x = data[x_column].tolist()
         y = data[y_column].tolist()
         if ones:
@@ -204,3 +209,27 @@ class Functions():
                 df.at[round(math.ceil(matrix[i][j] * 100) / 2), 'count'] += 1
                 df.at[round(math.ceil(matrix[i][j] * 100) / 2), 'poji'] += matrix_poji[i][j]
         return df
+    
+    def aggregate_df(self, df, bounds = [1], aggregated_column = 'count'):
+        bounds.insert(0, -1)
+        intervals = []
+        for i in range(1, len(bounds)):
+            intervals.append((bounds[i-1], bounds[i]))
+        new_data = []
+        for interval in intervals:
+            start, end = interval
+            aggregated_count = df[(df['upper_bound'] > start) & (df['upper_bound'] <= end)][aggregated_column].sum()
+            new_data.append({'upper_bound': end, aggregated_column: aggregated_count})
+        new_df = pd.DataFrame(new_data)
+        return new_df
+    
+    def map_mx_to_mx_bounds(self, matrix, bounds = [1]):
+        values = [i / (len(bounds) - 1) for i in range(len(bounds))]
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                for k in range(len(bounds)):
+                    if matrix[i][j] <= bounds[k]:
+                        matrix[i][j] = values[k]
+                        break
+        return matrix
+        
