@@ -72,8 +72,8 @@ blur_mx_zone = func.product_of_matrixes(blur_mx, mx_zone_0_1)
 df3 = func.convert_mx_to_df(func, matrix = blur_mx_zone, red_factor = red_factor)
 st.map(df3, latitude='latitude', longitude='longitude', color='color_hex', size=350)
 
-df_map = func.map_mx_to_df(func, blur_mx_zone)
-st.bar_chart(df_map, x="upper_bound", y="count")
+df_map_chart = func.map_mx_to_df(func, blur_mx_zone)
+st.bar_chart(df_map_chart, x="upper_bound", y="count")
 
 map_mx = func.map_mx_to_mx_bounds(func, blur_mx_zone, bounds = [0.1, 0.2, 0.3, 1])
 df4 = func.convert_mx_to_df(func, matrix = map_mx, red_factor = red_factor)

@@ -35,3 +35,28 @@ After this process, there may still be an issue where some squares contain nonze
 ![image](pics\final_pic.PNG)
 
 The result can be displayed on the map again and utilized in further processes.
+
+## Example of Data Utilization
+
+The resulting matrix of values can be used, for example, for weighting the fragmentation surcharge for insurance. Let's look at it in a specific case. First, to simplify, we'll classify all squares into four areas according to the value of accumulation:
+
+|           # zone            |     |     1      |     2      |     3      |     4      |
+| :-------------------------: | --- | :--------: | :--------: | :--------: | :--------: |
+| accumulation value interval |     | [0.0, 0.1] | (0.1, 0.2] | (0.2, 0.3] | (0.3, 1.0] |
+
+We can visualize these areas on the map again:
+
+![image](pics\map_pic_1.PNG)
+
+In these images, we focus on the flood risk, so we can notice how the risk accumulation manifests, for example, around river courses:
+
+![image](pics\map_pic_2.PNG)
+
+Now let's say that in our case, the original surcharge for insurance is 1.6%. We want to distribute this surcharge so that it decreases in zone 0 and linearly increases in the remaining zones up to 3%, reaching a maximum of 4.6%. Therefore, we only need to calculate the distribution of insurance in our defined zones, and we get an approximate table like this:
+
+|           # area            |     |     0      |     1      |     2      |     3      |
+| :-------------------------: | :-: | :--------: | :--------: | :--------: | :--------: |
+| accumulation value interval |     | [0.0, 0.1] | (0.1, 0.2] | (0.2, 0.3] | (0.3, 1.0] |
+|   insurance distribution    |     |    72 %    |    16 %    |    6 %     |    6 %     |
+|     original surcharge      |     |   1.6 %    |   1.6 %    |   1.6 %    |   1.6 %    |
+|        new surcharge        |     |   1.0 %    |    2.6%    |   3.6 %    |   4.6 %    |

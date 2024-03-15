@@ -18,14 +18,21 @@ def get_data_from_csv(file_path):
 
 df = get_data_from_csv(file_path = './data/streamlit_data_20240220_skody_cut.csv')
 print(df.head())
+df_zone = get_data_from_csv(file_path = './data/DATA_MATRIX_FLOOD_ZONE_A_GD.csv')
+
 mx = func.convert_data_to_mx(func, df, 'skody_POVODEN_cut1')
+blur_mx = func.blur_matrix(func, matrix = mx, distance = 3, power = 1.0)
+mx_zone = func.convert_data_to_mx(func, df_zone, values_column = 'SUM_of_emb_bu_flood_zone_0', normalize = False, ones = True)
+mx_zone_0_1 = func.normalize_matrix_ceil_0_1(mx_zone)
+blur_mx_zone = func.product_of_matrixes(blur_mx, mx_zone_0_1)
+
 mx_poji_povo = func.convert_data_to_mx(func, df, 'pojistne_POVODEN', normalize=False, round_values=True)
 
 #df_map = func.map_mx_to_df(func, mx)
 #print(df_map)
 
-df_map_poji = func.map_mx_to_df_poji(func, mx, mx_poji_povo)
-#print(df_map_poji)
+df_map_poji = func.map_mx_to_df_poji(func, blur_mx_zone, mx_poji_povo)
+print(df_map_poji)
 
 df_aggregated = func.aggregate_df(func, df_map_poji, bounds=[0.1, 0.2, 0.3, 1])
 print(df_aggregated)
@@ -41,8 +48,9 @@ print(prirazka)
 pojis = df_aggregated['poji'].to_list()
 print(pojis)
 
-max_plus = 0.06
+max_plus = 0.03
 step_plus = max_plus / (len(pojis) - 1)
+print(step_plus)
 plus_prirazka = 0
 for i in range(1, len(pojis)):
     plus_prirazka = plus_prirazka + (pojis[i] * (original_prc + i * step_plus))
@@ -51,3 +59,7 @@ step_minus = original_prc - ((prirazka - plus_prirazka) / pojis[0])
 print(step_minus)
 
 print([x / sum(pojis) for x in pojis])
+
+print(plus_prirazka)
+print((original_prc - step_minus) * pojis[0])
+print(plus_prirazka + (original_prc - step_minus) * pojis[0])

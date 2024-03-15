@@ -35,3 +35,28 @@ Po tomto procesu však ještě vzniká problém s tím, že v některých příp
 ![image](pics\final_pic.PNG)
 
 Výsledek můžeme opět zobrazit na mapě a využít ho v dalších procesech.
+
+## Příklad využití dat
+
+Výslednou matici hodnot můžeme použit například pro vážení rozmělnění přirážky na zajištění. Podíváme se na to v konkrétním případě. V první řadě pro zjednodužení rozřadíme všechny čtverečky do čtyř oblastí podle hodnoty akumulace:
+
+|           # zóny           |     |     1      |     2      |     3      |     4      |
+| :------------------------: | --- | :--------: | :--------: | :--------: | :--------: |
+| interval hodnoty akumulace |     | [0.0, 0.1] | (0.1, 0.2] | (0.2, 0.3] | (0.3, 1.0] |
+
+Tyto oblasti můžeme opět zobrazit na mapě:
+
+![image](pics\map_pic_1.PNG)
+
+V těchto obrázcích se zaměřujeme na riziko povodně, proto si můžeme všimnout, jakým způsobem se akumulace rizika projevuje například v okolí říčních toků:
+
+![image](pics\map_pic_2.PNG)
+
+Nyní řekněme, že v našem případě je původní přírážka k pojistnému za zajištění 1.6 %. TUto přirážku chceme rozmělnit tak, aby v zóně 0 klesla a ve zbylých zónách lineárně stoupala až o 3 %, tedy v maximu na hodnotu 4.6 %. Proto tedy již stačí dopočítat rozdělení pojistného v našich zadefinovaných zónách a získáme takovouto přibližkou tabulku:
+
+|         # oblasti          |     |     0      |     1      |     2      |     3      |
+| :------------------------: | :-: | :--------: | :--------: | :--------: | :--------: |
+| interval hodnoty akumulace |     | [0.0, 0.1] | (0.1, 0.2] | (0.2, 0.3] | (0.3, 1.0] |
+|    rozdělení pojistného    |     |    72 %    |    16 %    |    6 %     |    6 %     |
+|      původní přirážka      |     |   1.6 %    |   1.6 %    |   1.6 %    |   1.6 %    |
+|       nová přirážka        |     |   1.0 %    |    2.6%    |   3.6 %    |   4.6 %    |
